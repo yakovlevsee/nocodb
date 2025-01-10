@@ -40,7 +40,7 @@ function toggleHiddenFields() {
 }
 
 const shouldApplyDataCell = (column: ColumnType) =>
-  !(isBarcode(column) || isQrCode(column) || isCheckbox(column) || isRating(column))
+  !(isBarcode(column) || isQrCode(column) || isCheckbox(column) || isRating(column) || isJSON(column))
 </script>
 
 <template>

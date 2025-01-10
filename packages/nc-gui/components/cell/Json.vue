@@ -166,6 +166,8 @@ watch(inputWrapperRef, () => {
     modal.parentElement.removeEventListener('mouseup', stopPropagation)
   }
 })
+
+const overlayActions = computed(() => !isExpanded.value && (isExpandedFormOpen.value || isForm.value))
 </script>
 
 <template>
@@ -175,24 +177,39 @@ watch(inputWrapperRef, () => {
     :closable="false"
     centered
     :footer="null"
+    :class="{ 'group': isExpandedFormOpen || isForm, 'nc-data-cell': isExpandedFormOpen }"
     :wrap-class-name="isExpanded ? '!z-1051 nc-json-expanded-modal' : null"
   >
-    <div v-if="editEnabled && !readOnly" class="flex flex-col w-full" @mousedown.stop @mouseup.stop @click.stop>
-      <div class="flex flex-row justify-between pt-1 pb-2 nc-json-action" @mousedown.stop>
-        <a-button type="text" size="small" @click="isExpanded = !isExpanded">
+    <div
+      v-if="editEnabled && !readOnly"
+      class="flex flex-col w-full"
+      :class="{ relative: overlayActions }"
+      @mousedown.stop
+      @mouseup.stop
+      @click.stop
+    >
+      <div
+        class="flex flex-row items-center justify-between space-x-2 nc-json-action pb-2"
+        :class="{ 'absolute -top-1 right-1 z-50': overlayActions, 'top-1': isExpandedFormOpen && overlayActions }"
+        @mousedown.stop
+      >
+        <NcButton
+          type="secondary"
+          :size="isExpanded ? 'small' : 'xxsmall'"
+          @click="isExpanded = !isExpanded"
+        >
           <CilFullscreenExit v-if="isExpanded" class="h-2.5" />
+          <component v-else :is="iconMap.maximize" class="transform group-hover:(!text-grey-800) text-gray-700 w-3 h-3" />
+        </NcButton>
 
-          <CilFullscreen v-else class="h-2.5" />
-        </a-button>
+        <div v-if="(!isForm && !isExpandedFormOpen) || isExpanded" class="flex flex-row my-1 space-x-1">
+          <NcButton type="secondary" :size="isExpanded ? 'small' : 'xxsmall'" class="!rounded-lg" @click="clear">
+            <div :class="isExpanded ? 'text-xs' : 'text-[10px] p-1'">{{ $t('general.cancel') }}</div>
+          </NcButton>
 
-        <div v-if="!isForm && !isExpandedFormOpen || isExpanded" class="flex flex-row my-1 space-x-1">
-          <a-button type="text" size="small" class="!rounded-lg" @click="clear"
-            ><div class="text-xs">{{ $t('general.cancel') }}</div></a-button
-          >
-
-          <a-button
+          <NcButton
             :type="!isExpanded ? 'text' : 'primary'"
-            size="small"
+            :size="isExpanded ? 'small' : 'xxsmall'"
             class="nc-save-json-value-btn !rounded-lg"
             :class="{
               'nc-edit-modal': !isExpanded,
@@ -200,8 +217,8 @@ watch(inputWrapperRef, () => {
             :disabled="!!error || localValue === vModel"
             @click="onSave"
           >
-            <div class="text-xs">{{ $t('general.save') }}</div>
-          </a-button>
+            <div :class="isExpanded ? 'text-xs' : 'text-[10px] p-1'">{{ $t('general.save') }}</div>
+          </NcButton>
         </div>
       </div>
 
@@ -212,7 +229,7 @@ watch(inputWrapperRef, () => {
         :class="{ 'expanded-editor': isExpanded, 'editor': !isExpanded }"
         :hide-minimap="true"
         :disable-deep-compare="true"
-        :auto-focus="!isForm && !isEditColumn"
+        :auto-focus="!isForm && !isExpandedFormOpen && !isEditColumn"
         @update:model-value="localValue = $event"
         @keydown.enter.stop
         @keydown.alt.stop
@@ -242,5 +259,18 @@ watch(inputWrapperRef, () => {
   &.nc-edit-modal:not(:disabled) {
     @apply !text-brand-500 !hover:text-brand-600;
   }
+}
+
+.nc-data-cell:focus-within {
+  @apply !border-1 !border-brand-500 !rounded-lg !shadow-none !ring-0;
+  // Mimic ant's input box
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+  box-shadow: 0px 0px 0px 2px rgba(51, 102, 255, 0.24) !important;
+}
+.nc-data-cell {
+  @apply border-1 border-gray-200 overflow-hidden rounded-lg shadow pt-2;
+  box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.08);
 }
 </style>
