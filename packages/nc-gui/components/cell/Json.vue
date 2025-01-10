@@ -24,6 +24,7 @@ const active = inject(ActiveCellInj, ref(false))
 const isEditColumn = inject(EditColumnInj, ref(false))
 
 const isForm = inject(IsFormInj, ref(false))
+const isExpandedFormOpen = inject(IsExpandedFormOpenInj, ref(false))!
 
 const readOnly = inject(ReadonlyInj, ref(false))
 
@@ -184,7 +185,7 @@ watch(inputWrapperRef, () => {
           <CilFullscreen v-else class="h-2.5" />
         </a-button>
 
-        <div v-if="!isForm || isExpanded" class="flex flex-row my-1 space-x-1">
+        <div v-if="!isForm && !isExpandedFormOpen || isExpanded" class="flex flex-row my-1 space-x-1">
           <a-button type="text" size="small" class="!rounded-lg" @click="clear"
             ><div class="text-xs">{{ $t('general.cancel') }}</div></a-button
           >
