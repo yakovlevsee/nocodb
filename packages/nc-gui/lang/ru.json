@@ -1475,7 +1475,7 @@
     "createTable": "Создайте свою первую таблицу!",
     "createTableLabel": "Create your first table effortlessly, from scratch, or by importing/connecting to an external database.",
     "noTokenCreated": "API токены не созданы",
-    "noTokenCreatedLabel": "Begin by creating API tokens to unlock advanced functionalities.",
+    "noTokenCreatedLabel": "Начните создавать API-токен для получения доступа к дополнительным функциям сервиса.",
     "inviteYourTeam": "Пригласите вашу команду",
     "inviteYourTeamLabel": "Streamline collaboration and productivity with your team – start by inviting them to join your workspace.",
     "searchOptions": "Поиск опций",
